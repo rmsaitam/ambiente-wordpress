@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+   wp-mysql:
+     image: mysql:5.7
+     container_name: mysql_wordpress
+     volumes:
+      - ./wp_mysql/dbdata:/var/lib/mysql
+     environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=blogwp
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=secret
+   wordpress:
+     depends_on:
+      - wp-mysql
+     image: wordpress:latest
+     container_name: wp
+     ports:
+      - "8080:80"
+     volumes:
+      - ./src:/var/www/html
+      - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+     environment:
+      - WORDPRESS_DB_HOST=wp-mysql:3306
+      - WORDPRESS_DB_USER=user
+      - WORDPRESS_DB_PASSWORD=secret
+      - WORDPRESS_DB_NAME=blogwp
+# volumes:
+#    db_data:
